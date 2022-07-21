@@ -32,7 +32,12 @@ class ScatterPlot extends Component {
 
     // x scale
     const xScale = d3.scaleLinear();
-    xScale.domain([d3.min(plotdata, d => d.Year) - 1, d3.max(plotdata, d => d.Year) + 1]).range([horizonPad, w - horizonPad]);
+    xScale
+      .domain([
+        d3.min(plotdata, (d) => d.Year) - 1,
+        d3.max(plotdata, (d) => d.Year) + 1,
+      ])
+      .range([horizonPad, w - horizonPad]);
     // y scale
     const formatLabels = (timeExtent) => {
       const step = 1000; // milliseconds
@@ -54,9 +59,7 @@ class ScatterPlot extends Component {
 
     // Create axes and format labels
     const xAxis = d3.axisBottom(xScale);
-    const xLabels = new Array(13)
-      .fill(0, 0)
-      .map((val, i) => 1994 + 2 * i);
+    const xLabels = new Array(13).fill(0, 0).map((val, i) => 1994 + 2 * i);
     xAxis.tickFormat((d, i) => xLabels[i]);
     xAxis.tickPadding([20]);
     const yAxis = d3
@@ -150,9 +153,15 @@ class ScatterPlot extends Component {
         tooltip.style.top = `${
           document.documentElement.scrollTop + e.clientY - 30
         }px`;
-        tooltip.style.left = `${
-          document.documentElement.scrollLeft + e.clientX + 10
-        }px`;
+
+        if (window.innerWidth <= 940) {
+          tooltip.style.left = `${e.target.getAttribute('cx') + 10}px`;
+        } else {
+          tooltip.style.left = `${
+            document.documentElement.scrollLeft + e.clientX + 10
+          }px`;
+        }
+
         tooltip.style.backgroundColor = e.target.style.fill;
         tooltip.setAttribute('data-year', plotdata[index].Year);
         tooltipName.textContent = plotdata[index].Name;
@@ -203,5 +212,4 @@ class ScatterPlot extends Component {
 }
 
 export default ScatterPlot;
-
 
